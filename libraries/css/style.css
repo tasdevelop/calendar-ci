@@ -1,4 +1,118 @@
-.navbar-default{
-	background-color: #31c3a8;
-    border-color: #31c3a8;
+
+/* CSS Document */
+
+html {
+overflow: -moz-scrollbars-vertical;
+overflow-y: scroll;
+}
+
+body {
+    background:url(../img/page_bg.jpg);
+    font-family:segoeui;
+    margin:8px;
+    font-size: 12px !important;
+}
+
+textarea{
+    font-family:segoeui;
+}
+
+.form input[type="file"]{
+    z-index: 999;
+    line-height: 0;
+    position: absolute;
+    opacity: 0;
+    filter: alpha(opacity = 0);-ms-filter: "alpha(opacity=0)";
+    cursor: pointer;
+    _cursor: hand;
+}
+
+ul.title{
+    font-size: 14px;
+    color: rgb(0,128,0);
+    font-weight: bold;
+    margin:2px;
+    margin-left: -10px;
+}
+
+#tip{
+    padding: 5px 10px 5px 0;
+    float: right;
+}
+.noMargin{
+    margin:0px !important;
+}
+.noPadding{
+    padding: 0px !important;
+}
+.borderForm > div{
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 3px;
+}
+#tip2{
+    padding: 5px 10px 5px 0;
+    float: right;
+}
+#menuAtas{
+    padding:5px;
+    border:1px solid #95B8E7;
+    background-color: #E0ECFF;
+    background: -webkit-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+    background: -moz-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+    background: -o-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+    background: linear-gradient(to bottom,#EFF5FF 0,#E0ECFF 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFF5FF,endColorstr=#E0ECFF,GradientType=0);
+}
+.indukJam{
+     float:right;
+     font-weight: bold;
+     line-height: 2;
+}
+div.upload input{
+    margin-top: -25px;
+    display: block !important;
+    width: 157px !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+}
+input{
+    text-transform: uppercase;
+}
+.datagrid-row{
+    height: 25px !important;
+}
+/*.tableBesuk > tbody > tr > td{
+    text-align: right;
+}*/
+.btnWarna{
+    background: #eaf2ff !important;
+    color: #000000 !important;
+    border: 1px solid #b7d2ff !important;
+}
+input .textbox-text{
+    height: 20px !important;
+}
+.panel-body-noheader{
+    padding: 0 !important;
+}
+.textbox-readonly .textbox-text{
+    background: #ddd;
+}
+.gray{
+    background: #ddd !important;
+}
+.menu-item{
+    height: 20px !important;
+}
+.menu-item .menu-text{
+    line-height: 20px !important;
+    height: 20px !important;
+}
+.textbox-label{
+    width: 100px !important;
+}
+.textarea-custom{
+    margin-left:3px !important;
 }

@@ -19,9 +19,9 @@
             }
             window.onload = start;
         </script>
-  	<p><h2>CMS | Church Membership System - GMI GLORIA</h2></p>
+    <p><h2>CMS | Church Membership System - GMI GLORIA</h2></p>
     <div style="margin:10px 0;"></div>
-    <div  id="menuAtas">
+    <div id="menuAtas">
         <?php
             $sub="";
             $plain = "";
