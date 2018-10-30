@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller{
         $data['loggedUser'] = $acl->getLoggedInUser();
         if(!$data['loggedUser']==""){
             $data['sqlmenu'] = $this->mmenutop->get_data();
+            // print_r($data['sqlmenu']);
             $this->load->view('partials/header');
             $this->load->view('navbar',$data);
         }

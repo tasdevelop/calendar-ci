@@ -9,8 +9,11 @@ class Calendar extends MY_Controller {
         $this->table  = 'events';
         $this->load->model('Mcalendar');
     }
-    /*Home page Calendar view  */
-    Public function index()
+    /**
+     * tampilan awal calendar
+     * @AclName index calendar
+     */
+    public function index()
     {
         // if ($this->hakakses('calendar') == "000000") {
             // $this->load->view('calendar/view');
@@ -18,33 +21,48 @@ class Calendar extends MY_Controller {
             $this->load->view('calendar/index');
         // }
     }
-    /*Get all Events */
-    Public function getEvents()
+    /**
+     * tampilan get event
+     * @AclName get event
+     */
+    public function getEvents()
     {
         $result=$this->Mcalendar->getEvents();
         echo json_encode($result);
     }
-    /*Add new event */
-    Public function addEvent()
+    /**
+     * tampilan add event
+     * @AclName add event
+     */
+    public function addEvent()
     {
         $result=$this->Mcalendar->addEvent();
         echo $result;
     }
-    /*Update Event */
-    Public function updateEvent()
+    /**
+     * tampilan update event
+     * @AclName update event
+     */
+    public function updateEvent()
     {
         $result=$this->Mcalendar->updateEvent();
         echo $result;
     }
-    /*Delete Event*/
-    Public function deleteEvent()
+    /**
+     * tampilan delete event
+     * @AclName delete event
+     */
+    public function deleteEvent()
     {
         $result=$this->Mcalendar->deleteEvent();
         echo $result;
     }
-    Public function dragUpdateEvent()
+    /**
+     * tampilan dragUpdateEvent
+     * @AclName dragUpdateEvent
+     */
+    public function dragUpdateEvent()
     {
-
         $result=$this->Mcalendar->dragUpdateEvent();
         echo $result;
     }

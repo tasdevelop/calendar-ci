@@ -95,6 +95,125 @@
     </div>
 <script type="text/javascript">
     $(function () {
+        $('#calendar').fullCalendar({
+        header: {
+            left: 'prev, next, today',
+            center: 'title',
+             right: 'month, basicWeek, basicDay'
+        },
+        // Get all events stored in database
+        eventLimit: true, // allow "more" link when too many events
+        events: base_url+'calendar/getEvents',
+        selectable: true,
+        selectHelper: true,
+        editable: <?= hasPermission('calendar','updateEvent')?"true":"false" ?>, // Make the event resizable true
+            select: function(start, end) {
+                // console.log(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+                $('#start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+                $('#end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
+                 // Open modal to add event
+            modal({
+                // Available buttons when adding
+                buttons: {
+                    add: {
+                        id: 'add-event', // Buttons id
+                        css: 'btn-success', // Buttons class
+                        label: 'Add' // Buttons label
+                    }
+                },
+                title: 'Add Event' // Modal title
+            });
+            },
+
+         eventDrop: function(event, delta, revertFunc,start,end) {
+            start = event.start.format('YYYY-MM-DD HH:mm:ss');
+            if(event.end){
+                end = event.end.format('YYYY-MM-DD HH:mm:ss');
+            }else{
+                end = start;
+            }
+
+           $.post(base_url+'calendar/dragUpdateEvent',{
+                id:event.id,
+                start : start,
+                end :end
+            }, function(result){
+                $('.alert').addClass('alert-success').text('Event updated successfuly');
+                hide_notify();
+
+
+            });
+
+
+
+          },
+          eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+
+                start = event.start.format('YYYY-MM-DD HH:mm:ss');
+            if(event.end){
+                end = event.end.format('YYYY-MM-DD HH:mm:ss');
+            }else{
+                end = start;
+            }
+
+               $.post(base_url+'calendar/dragUpdateEvent',{
+                id:event.id,
+                start : start,
+                end :end
+            }, function(result){
+                $('.alert').addClass('alert-success').text('Event updated successfuly');
+                hide_notify();
+
+            });
+            },
+
+        // Event Mouseover
+        eventMouseover: function(calEvent, jsEvent, view){
+
+            var tooltip = '<div class="event-tooltip">' + calEvent.description + '</div>';
+            $("body").append(tooltip);
+
+            $(this).mouseover(function(e) {
+                $(this).css('z-index', 10000);
+                $('.event-tooltip').fadeIn('500');
+                $('.event-tooltip').fadeTo('10', 1.9);
+            }).mousemove(function(e) {
+                $('.event-tooltip').css('top', e.pageY + 10);
+                $('.event-tooltip').css('left', e.pageX + 20);
+            });
+        },
+        eventMouseout: function(calEvent, jsEvent) {
+            $(this).css('z-index', 8);
+            $('.event-tooltip').remove();
+        },
+        // Handle Existing Event Click
+        eventClick: function(calEvent, jsEvent, view) {
+            // Set currentEvent variable according to the event clicked in the calendar
+            currentEvent = calEvent;
+            // Open modal to edit or delete event
+            modal({
+                // Available buttons when editing
+                buttons: {
+                    delete: {
+                        id: 'delete-event',
+                        css: 'btn-danger',
+                        label: 'Delete',
+                        dom:'<?= hasPermission("calendar","deleteEvent")?"":"disabled" ?>'
+                    },
+                    update: {
+                        id: 'update-event',
+                        css: 'btn-success',
+                        label: 'Update',
+                        dom:'<?= hasPermission("calendar","updateEvent")?"":"disabled" ?>'
+                    }
+                },
+                title: 'Edit Event "' + calEvent.title + '"',
+                event: calEvent
+            });
+        }
+
+    });
+
         // $('#datetimepicker1').datetimepicker({
         //     format:'YYYY-MM-DD HH:mm:ss'
         // });

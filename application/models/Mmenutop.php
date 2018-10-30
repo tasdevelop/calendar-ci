@@ -8,19 +8,23 @@ class Mmenutop extends MY_Model
 		$data = array();
 		$result = $this->db->query("SELECT  t1.menuid,t1.menuname,t1.menuicon,t3.class,t3.method,t1.link
 			FROM tblmenu t1 left join tblacos t3 on t1.acoid = t3.acosid
-						WHERE t1.menuparent='$induk' and (t1.acoid = t3.acosid or t1.menuparent=0 or t1.menuparent=40 or t1.menuid=40 or t1.link!='')   ORDER BY menuseq ASC");
+						WHERE t1.menuparent='$induk' and (t1.acoid = t3.acosid or t1.menuparent=0  or t1.link!='')   ORDER BY menuseq ASC");
 
 		foreach($result->result() as $row)
 		{
-			$data[] = array(
-					'menuid'	=>$row->menuid,
-					'menuname'	=>$row->menuname,
-					'menuicon'	=>$row->menuicon,
-					'link' => $row->link,
-					'menuexe'	=>$row->class."/".$row->method,
-					// recursive
-					'child'	=>$this->get_data($row->menuid)
-				);
+			if(hasPermission($row->class,$row->method)){
+				$data[] = array(
+						'menuid'	=>$row->menuid,
+						'menuname'	=>$row->menuname,
+						'menuicon'	=>$row->menuicon,
+						'link' => $row->link,
+						'menuexe'	=>$row->class."/".$row->method,
+						// recursive
+						'child'	=>$this->get_data($row->menuid)
+					);
+
+			}
+
 		}
 
 		return $data;
