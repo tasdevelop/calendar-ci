@@ -37,9 +37,4 @@ class Mcalendar extends MY_Model {
         return ($this->dbcalendar->affected_rows()!=1)?false:true;
     }
 
-
-
-
-
-
 }

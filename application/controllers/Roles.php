@@ -5,23 +5,50 @@ class Roles extends MY_Controller{
         session_start();
         $this->load->model([
             'Mroles',
-            'Macos'
+            'Mroles'
         ]);
     }
     /**
-     * tampilan awal dari roles
-     * @AclName List Roles
+     * tampilan menu dari roles
+     * @AclName menu Roles
      */
     public function index(){
-        $link = base_url().'roles/grid';
-        $this->render('roles/gridroles',['link'=>$link]);
+        $this->render('roles/grid');
+    }
+    public function ajax_list(){
+        $list = $this->Mroles->get_datatables();
+        $data= array();
+        $no = $_POST['start'];
+        foreach($list as $roles){
+            $no++;
+            $row = array();
+            $view = "<button class='btn btn-primary btn-sm' onclick=\"view('".$roles->roleid."')\"><i class='fa fa-eye'></i></button> ";
+            $edit = " <button class='btn btn-warning btn-sm' onclick=\"edit('".$roles->roleid."')\"><i class='fa fa-edit'></i></button> ";
+            $del = " <button class='btn btn-danger btn-sm' onclick=\"deleted('".$roles->roleid."')\"><i class='fa fa-trash'></i></button> ";
+            $aksi = $view.$edit.$del;
+            $row[] = $no;
+            $row[] = $aksi;
+            $row[] = $roles->rolename;
+            $row[] = $roles->modifiedby;
+            $row[] = $roles->modifiedonview;
+            $data[] = $row;
+        }
+        $output = array(
+                        "draw" => @$_POST['draw'],
+                        "recordsTotal" => $this->Mroles->count_all(),
+                        "recordsFiltered" => $this->Mroles->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
     }
     /**
      * Fungsi view Roles
      * @AclName View Roles
      */
     public function view($id){
-        $acos = $this->Macos->getList();
+        $acosid = $this->Mroles->getList();
+        $acos = $this->Mroles->getList();
         $data = $this->Mroles->getByIdRoles($id);
         if(empty($data)){
             redirect('roles');
@@ -30,54 +57,12 @@ class Roles extends MY_Controller{
         $this->load->view('roles/view',['data'=>$data,'acos'=>$acos]);
     }
     /**
-     * Merupakan Grid dari Roles
-     * @AclName Grid Roles
-     */
-    public function grid(){
-        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        $rows = isset($_GET['rows']) ? intval($_GET['rows']) : 10;
-        $sort = isset($_GET['sort']) ? strval($_GET['sort']) : 'roleid';
-        $order = isset($_GET['order']) ? strval($_GET['order']) : 'asc';
-        $filterRules = isset($_GET['filterRules']) ? ($_GET['filterRules']) : '';
-        $cond = '';
-        if (!empty($filterRules)){
-            $cond = ' where 1=1 ';
-            $filterRules = json_decode($filterRules);
-            foreach($filterRules as $rule){
-                $rule = get_object_vars($rule);
-                $field = $rule['field'];
-                $op = $rule['op'];
-                $value = $rule['value'];
-                if (!empty($value)){
-                    if ($op == 'contains'){
-                        $cond .= " and ($field like '%$value%')";
-                    }
-                }
-            }
-        }
-        $sql = $this->Mroles->count($cond);
-        $total = $sql->num_rows();
-        $offset = ($page - 1) * $rows;
-        $data = $this->Mroles->get($cond,$sort,$order,$rows,$offset)->result();
-        foreach($data as $row){
-            $view = hasPermission('roles','view')?'<button class="icon-view_detail" onclick="viewData(\''.$row->roleid.'\')" style="width:16px;height:16px;border:0"></button> ':'';
-            $edit = hasPermission('roles','edit')?'<button class="icon-edit" onclick="editData(\''.$row->roleid.'\')" style="width:16px;height:16px;border:0"></button> ':'';
-            $del = hasPermission('roles','delete')?'<button class="icon-remove" onclick="deleteData(\''.$row->roleid.'\')" style="width:16px;height:16px;border:0"></button>':'';
-            $row->aksi = $view.$edit.$del;
-        }
-        $response = new stdClass;
-        $response->total=$total;
-        $response->rows = $data;
-        $_SESSION['excel']= "asc|parameter_key|".$cond;
-        echo json_encode($response);
-    }
-    /**
      * Fungsi tambah roles
      * @AclName Tambah Roles
      */
     public function add(){
         $data = [];
-        $acos = $this->Macos->getList();
+        $acos = $this->Mroles->getList();
         if($this->input->server('REQUEST_METHOD') == "POST"){
             if($this->_validateForm()){
                 $data = $this->input->post();
@@ -88,7 +73,7 @@ class Roles extends MY_Controller{
                 $data = $this->input->post();
                 $error = 1;
             }
-            echo json_encode(['error'=>$error,'message'=>$this->form_validation->error_array()]);
+            echo json_encode(['error'=>$error,'status'=>'sukses']);
         }else{
             $this->load->view('roles/form',['data'=>$data,'acos'=>$acos]);
         }
@@ -99,7 +84,7 @@ class Roles extends MY_Controller{
      * @AclName Edit Roles
      */
     public function edit($id){
-        $acos = $this->Macos->getList();
+        $acos = $this->Mroles->getList();
         $data = $this->Mroles->getByIdRoles($id);
         if(empty($data)){
             redirect('roles');
@@ -116,7 +101,7 @@ class Roles extends MY_Controller{
                 $data = $this->input->post();
                 $error =1;
             }
-            echo json_encode(['error'=>$error,'message'=>$this->form_validation->error_array()]);
+            echo json_encode(['error'=>$error,'status'=>'sukses']);
         }else{
             $this->load->view('roles/form',['data'=>$data,'acos'=>$acos]);
         }
@@ -127,7 +112,7 @@ class Roles extends MY_Controller{
      * @AclName Delete Roles
      */
     public function delete($id){
-        $acos = $this->Macos->getList();
+        $acos = $this->Mroles->getList();
         $data = $this->Mroles->getByIdRoles($id);
         if(empty($data)){
             redirect('roles');
@@ -140,14 +125,14 @@ class Roles extends MY_Controller{
             $hasil = array(
                 'error' => $error
             );
-            echo json_encode($hasil);
+           echo json_encode(['error'=>$error,'status'=>'sukses']);
         }else{
             $this->load->view('roles/delete',['data'=>$data,'acos'=>$acos]);
         }
 
     }
     private function _save($data){
-        $this->Mroles->save($data);
+        return $this->Mroles->save($data);
     }
     private function _validateForm(){
         $rules = [
